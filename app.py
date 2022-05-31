@@ -1,0 +1,3 @@
+import atm
+
+atm.main()

@@ -65,20 +65,35 @@ class ATM(Customer):
             print("Tidak ada riwayat transaksi.")
             return
 
-        sep = "+----------+------------+------------+"
+        columns = ["Jumlah", "Deskripsi", "Tanggal"]
+        mxLengths = []
+        sep = "+"
+
+        for i in range(len(columns)):
+            transaction = max(transactions, key=lambda x: x[i])
+            dataLength = len(str(transaction[i]))
+
+            if dataLength > len(columns[i]):
+                maxLength = dataLength
+            else:
+                maxLength = len(columns[i])
+
+            mxLengths.append(maxLength)
+            sep += "-" * (maxLength + 2) + "+"
 
         print(sep)
 
-        print("| %s | %s | %s |" % ("jumlah".ljust(8),
-                                    "deskripsi".ljust(10),
-                                    "tanggal".ljust(10)))
+        for i, column in enumerate(columns):
+            print(f"| {column.ljust(mxLengths[i])} ", end='')
+
+        print('|')
         print(sep)
 
         for transaction in transactions:
-            amount, description, date = transaction
-            print("| %s | %s | %s |" % (str(amount).ljust(8),
-                                        str(description).ljust(10),
-                                        str(date).ljust(10),))
+            for i, item in enumerate(transaction):
+                print(f"| {str(item).ljust(mxLengths[i])} ", end='')
+            print('|')
+
         print(sep)
 
 

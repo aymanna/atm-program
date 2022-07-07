@@ -9,7 +9,7 @@ class ATM(Customer):
 
     @property
     def formatted_balance(self):
-        return "Saldo Anda adalah Rp {:,}".format(self.balance)
+        return f"Saldo Anda adalah Rp {self.balance:,}"
 
     def withdraw(self, amount: int):
         if self.balance < amount:
@@ -19,13 +19,13 @@ class ATM(Customer):
         self.balance -= amount
         dbMethod.update_balance(self.balance, self.id)
         dbMethod.insert_transactions(self.id, amount, "withdraw")
-        print("Penarikan uang sebesar Rp {:,} berhasil.".format(amount))
+        print(f"Penarikan uang sebesar Rp {amount:,} berhasil.")
 
     def deposit(self, amount: int):
         self.balance += amount
         dbMethod.update_balance(self.balance, self.id)
         dbMethod.insert_transactions(self.id, amount, "deposit")
-        print("Setoran uang sebesar Rp {:,} berhasil.".format(amount))
+        print(f"Setoran uang sebesar Rp {amount:,} berhasil.")
 
     def change_pin(self, new_pin: str):
         if len(new_pin) != 6:

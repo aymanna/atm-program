@@ -49,6 +49,7 @@ class ATM(Customer):
             print("Saldo Anda tidak mencukupi untuk transfer.")
             return
 
+        target_name = dbMethod.get_user(target_id)[1]
         self.balance -= transfer_value
         balance_target = dbMethod.get_balance(target_id) + transfer_value
 
@@ -56,7 +57,10 @@ class ATM(Customer):
         dbMethod.update_balance(balance_target, target_id)
         dbMethod.insert_transactions(self.id, transfer_value,
                                      "transfer", target_id=target_id)
-        print("Transfer uang sebesar Rp {:,} berhasil.".format(transfer_value))
+        dbMethod.insert_transactions(target_id, transfer_value,
+                                     "recieve", target_id=self.id)
+
+        print(f"Transfer uang ke {target_name} sebesar Rp {transfer_value:,} berhasil.")
 
     def transaction_history(self):
         transactions = dbMethod.get_transactions(self.id)

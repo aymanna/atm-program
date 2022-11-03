@@ -42,7 +42,7 @@ def get_balance(id: str) -> int:
 def get_transactions(id: str) -> tuple:
     if not in_data(id):
         raise Exception("the target id is not within the database")
-    
+
     with sqlite3.connect(path) as conn:
         c = conn.cursor()
         c.execute(
@@ -63,7 +63,7 @@ def get_transactions(id: str) -> tuple:
 def update_balance(balance: int, id: str) -> None:
     if not in_data(id):
         raise Exception("the target id is not within the database")
-    
+
     with sqlite3.connect(path) as conn:
         c = conn.cursor()
         c.execute("UPDATE users SET balance = :balance WHERE id = :id ;",
@@ -74,7 +74,7 @@ def update_balance(balance: int, id: str) -> None:
 def update_pin(pin: str, id: str) -> None:
     if not in_data(id):
         raise Exception("the target id is not within the database")
-    
+
     with sqlite3.connect(path) as conn:
         c = conn.cursor()
         c.execute("UPDATE users SET pin = :pin WHERE id = :id ;",
@@ -86,8 +86,10 @@ def insert_transactions(id: str, amount: int, desc: str, target_id=None) -> None
     if target_id is None:
         target_id = id
 
-    if not (in_data(id) and in_data(target_id)):
+    if not in_data(id):
         raise Exception("the id is not within the database")
+    if not in_data(target_id):
+        raise Exception("the target id is not within the database")
 
     date = str(datetime.now())[:19].split(" ")[0]   # get current date
 
@@ -96,3 +98,15 @@ def insert_transactions(id: str, amount: int, desc: str, target_id=None) -> None
         c.execute("INSERT INTO transactions VALUES (:id, :user_id, :amount, :desc, :date);",
                   {"id": target_id, "user_id": id, "amount": amount, "desc": desc, "date": date})
         conn.commit()
+
+def transfer(id: str, amount: int, desc: str, target_id: str) -> None:
+    balance = get_balance(id)
+    target_balance = get_balance(target_id)
+
+    new_balance = balance - amount
+    new_target_balance = target_balance + amount
+
+    update_balance(new_balance, id)
+    update_balance(new_target_balance, target_id)
+    insert_transactions(id, amount, desc, target_id)
+    insert_transactions(target_id, amount, desc, id)

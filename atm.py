@@ -62,16 +62,17 @@ class ATM(Customer):
 
         print(f"Transfer uang ke {target_name} sebesar Rp {transfer_value:,} berhasil.")
 
+    @property
     def transaction_history(self):
+        ans = ''
         transactions = dbMethod.get_transactions(self.id)
         
         if not bool(transactions):  # check if empty
-            print("Tidak ada riwayat transaksi.")
-            return
+            return "Tidak ada riwayat transaksi."
 
         columns = ["Jumlah", "Deskripsi", "Tanggal"]
         max_col_lengths = []
-        sep = "+"
+        sep = '+'
 
         for i in range(len(columns)):
             mx_transaction = max(transactions, key=lambda x: x[i])
@@ -83,19 +84,22 @@ class ATM(Customer):
                 max_col_length = len(columns[i])
 
             max_col_lengths.append(max_col_length)
-            sep += "-" * (max_col_length + 2) + "+"
+            sep += '-' * (max_col_length + 2) + '+'
 
-        print(sep)
+        ans += sep + '\n'
 
         for i, column in enumerate(columns):
-            print(f"| {column.ljust(max_col_lengths[i])} ", end='')
+            ans += '|'
+            ans += f" {column.ljust(max_col_lengths[i])} "
 
-        print('|')
-        print(sep)
+        ans += '|' + '\n' + sep + '\n'
 
         for mx_transaction in transactions:
             for i, item in enumerate(mx_transaction):
-                print(f"| {str(item).ljust(max_col_lengths[i])} ", end='')
-            print('|')
+                ans += '|'
+                ans += f" {str(item).ljust(max_col_lengths[i])} "
+            ans += '|' + '\n'
 
-        print(sep)
+        ans += sep
+
+        return ans

@@ -83,7 +83,7 @@ def main():
 
         elif menu_input == '5':
             print()
-            user.transaction_history()
+            print(user.transaction_history)
             continue
 
         elif menu_input == '6':

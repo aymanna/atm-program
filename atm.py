@@ -75,8 +75,8 @@ class ATM(Customer):
         sep = '+'
 
         for i in range(len(columns)):
-            mx_transaction = max(transactions, key=lambda x: x[i])
-            data_length = len(str(mx_transaction[i]))
+            transaction = max(transactions, key=lambda x: x[i])
+            data_length = len(str(transaction[i]))
 
             if data_length > len(columns[i]):
                 max_col_length = data_length
@@ -94,8 +94,8 @@ class ATM(Customer):
 
         ans += '|' + '\n' + sep + '\n'
 
-        for mx_transaction in transactions:
-            for i, item in enumerate(mx_transaction):
+        for transaction in transactions:
+            for i, item in enumerate(transaction):
                 ans += '|'
                 ans += f" {str(item).ljust(max_col_lengths[i])} "
             ans += '|' + '\n'
